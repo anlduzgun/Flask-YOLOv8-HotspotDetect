@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Object Detection</title>
+    <style>
+        #canvas {
+            width: 640px;
+            height: 480px;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real-Time Object Detection</h1>
+    <canvas id="canvas"></canvas>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+
+                video.addEventListener('play', () => {
+                    const captureFrame = () => {
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        const frame = canvas.toDataURL('image/jpeg');
+                        socket.emit('video_frame', frame.split(',')[1]);
+                    };
+
+                    setInterval(captureFrame, 1000); // Adjust the interval as needed
+                });
+            })
+            .catch((err) => {
+                console.error('Error accessing the camera', err);
+            });
+
+        socket.on('processed_frame', (data) => {
+            const image = new Image();
+            image.src = 'data:image/jpeg;base64,' + data;
+            image.onload = () => {
+                context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            };
+        });
+    </script>
+</body>
+</html>

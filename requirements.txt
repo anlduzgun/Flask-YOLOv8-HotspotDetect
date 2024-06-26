@@ -1,2 +1,3 @@
-flask
+Flask
 ultralytics
+Flask-Mail
