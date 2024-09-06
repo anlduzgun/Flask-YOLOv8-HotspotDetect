@@ -42,3 +42,6 @@ Access the application by navigating to `http://localhost:5000` in your web brow
 - **Object Detection:** Upload images through the `/detect` endpoint to see the detected objects and their confidence levels.
 - **Send Email:** Use the `/send_email` endpoint to send emails. Modify the endpoint as needed to integrate with your frontend.
 - **Real-Time Video Detection:** Connect to the WebSocket at `/video_frame` to stream video frames for real-time object detection.
+
+![hotspot detected](/media/example.jpeg)
+
